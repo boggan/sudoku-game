@@ -18,23 +18,24 @@ module.exports = {
     target: 'web',
     module: {
         rules: [{
-            test: /\.js$/,
-            use: [{
-                loader: 'babel-loader'
-            }]
-        },
-        {
-            test: /\.vue$/,
-            use: [{
-                loader: 'vue-loader'
-            }]
-        }]
+                test: /\.js$/,
+                use: [{
+                    loader: 'babel-loader'
+                }]
+            },
+            {
+                test: /\.vue$/,
+                use: [{
+                    loader: 'vue-loader'
+                }]
+            }
+        ]
     },
     plugins: [
         // production
-        plugins: [new CleanWebpackPlugin([BUILD_DIR], {
+        new CleanWebpackPlugin([BUILD_DIR], {
             verbose: false
-        })],
+        }),
         new UglifyJSPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
