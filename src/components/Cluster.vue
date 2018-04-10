@@ -1,6 +1,6 @@
 <template>
     <div class="cluster">
-        <Cell v-for="(cell, idx) in cells" 
+        <Cell v-for="cell in cells" 
               :key="cell.id" 
               :id="cell.id"
               :editable="cell.editable"
