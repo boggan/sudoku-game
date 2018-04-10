@@ -6,9 +6,10 @@
                      v-bind:key="idx"
                      :class="'c' + idx"
                      :clusterIdx="idx - 1"
-                     :sheet="sheet" 
-                     :solution="solution" 
-                     :showSolution="showSolution" />
+                     :cells="clusters[idx - 1]"
+                     :showSolution="showSolution"
+                     :onCellNumberChanged="onCellNumberChanged"
+                     :onCellSelected="onCellSelected" />
         </div>
         <div class="signature">{{signature}}</div> 
     </div>
@@ -17,11 +18,54 @@
 <script>
 import Cluster from "./Cluster";
 
+/*
+split data into cluster chunks
+*/
+
+//=============================================================================
+function _extractClusterNumber(i_aSheet, i_nStartRow, i_nColumnOffset) {
+  let l_nEndColumn = i_nColumnOffset + 3;
+
+  return i_aSheet[i_nStartRow]
+    .slice(i_nColumnOffset, l_nEndColumn)
+    .concat(i_aSheet[i_nStartRow + 1].slice(i_nColumnOffset, l_nEndColumn))
+    .concat(i_aSheet[i_nStartRow + 2].slice(i_nColumnOffset, l_nEndColumn));
+}
+
+//=============================================================================
+function _buildClusterInfos(i_aBoard, i_nIndex) {
+  let l_nRest = i_nIndex % 3,
+    l_nStartRow = Math.abs(Math.floor(l_nRest) - i_nIndex),
+    l_nColumnOffset = l_nRest * 3;
+
+  return _extractClusterNumber(i_aBoard, l_nStartRow, l_nColumnOffset);
+}
+
 //=============================================================================
 export default {
   name: "Board",
   components: { Cluster },
-  props: ["sheet", "solution", "signature", "showSolution"]
+  props: {
+    board: Array,
+    signature: String,
+    showSolution: Boolean,
+    onCellNumberChanged: Function,
+    onCellSelected: Function
+  },
+
+  computed: {
+    clusters: function() {
+      let i,
+          l_aClusters = [];
+
+      // 9 clusters
+      for (i = 0; i < 9; i++) {
+        l_aClusters.push(_buildClusterInfos(this.board, i));
+      }
+
+      return l_aClusters;
+    }
+  }
 };
 </script>
 

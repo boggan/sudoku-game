@@ -33,9 +33,8 @@ module.exports = {
     },
     devtool: 'inline-source-map',
     target: 'web',
-    // MANDATORY FOR BUILD!!!!
     resolve: {
-        extensions: ['.js', '.vue'],
+        extensions: ['.js', '.vue', '.json'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js'
         }
