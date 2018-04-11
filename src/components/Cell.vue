@@ -3,16 +3,9 @@
          :class="{ cell: true, 'editable-cell': this.editable }"
     >
         <div v-if="editable && !showSolution">
-            <input v-model="inputValue"  
-                  @focus="onFocus"
-                  @input="onInput"
-                  @change="onInputChanged"
-                  @keyup="onKeyUp"
-                  type="text" 
-                  class="cell-input" 
-                  size="1" 
-                  maxlength="1"
-                  pattern="[1-9]"/>
+            <single-number-input    :number="answer"
+                                    :onChange="onChange"
+                                    :onSelected="onSelected" />
         </div>
         <div v-else>
             <span class="play-cell">{{solution}}</span>
@@ -21,8 +14,11 @@
 </template>
 
 <script>
+import SingleNumberInput from "./SingleNumberInput";
+
 export default {
   name: "Cell",
+  components: { SingleNumberInput },
   props: {
     id: Number,
     editable: Boolean,
@@ -34,20 +30,8 @@ export default {
     onCellSelected: Function
   },
 
-  computed: {
-    inputValue: {
-      get: function() {
-        return String(this.answer).trim();
-      },
-      set: function(i_nNumber) {
-        this.processInput(i_nNumber);
-      }
-    }
-  },
   methods: {
-    onFocus: function(i_oEvent) {
-      console.log("On input focuses", this.id, "Current Value: ", this.answer);
-
+    onSelected: function(i_oEvent) {
       this.onCellSelected({
         id: this.id,
         notes: this.notes,
@@ -55,28 +39,8 @@ export default {
       });
     },
 
-    onInput: function(i_oEvent) {
-      console.log("On Input received with -> ", i_oEvent.key);
-    },
-
-    onInputChanged: function(i_oEvent) {
-      console.log("On Input Changed received -> ", i_oEvent);
-    },
-
-    onKeyUp: function(i_oEvent) {
-      console.log("On Key Up received -> ", i_oEvent.key);
-      let l_sChar = this.processInput(i_oEvent.key);
-      i_oEvent.target.value = l_sChar;
-    },
-
-    processInput(i_sChar) {
-      let l_nNumKey = Number(i_sChar);
-
-      if (isNaN(l_nNumKey) || l_nNumKey === 0) {
-        l_nNumKey = "";
-      }
-      this.onCellNumberChanged(this.id, l_nNumKey);
-      return l_nNumKey;
+    onChange: function(i_nNumber) {
+      this.onCellNumberChanged(this.id, i_nNumber);
     }
   }
 };

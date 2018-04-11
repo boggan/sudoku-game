@@ -72,7 +72,8 @@ export default {
       board: l_aBoardData,
       signature: SudokuGenerator.generatedBoards[0].signature,
       showSolution: false,
-      previewData: null
+      previewData: null,
+      nbTries: 0
     };
   },
   methods: {

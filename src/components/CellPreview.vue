@@ -4,19 +4,17 @@
                v-model="notes"
                class="cell-notes" />
 
-        <input v-model="inputValue"
-               @input="onInputChanged" 
-               @focus="onFocus"
-               type="text" 
-               class="cell-input" 
-               size="1" 
-               maxlength="1"/>
+        <single-number-input    :number="previewData && previewData.inputValue || ''"
+                                :onChange="onInputChanged" />
     </div>
 </template>
 
 <script>
+import SingleNumberInput from './SingleNumberInput';
+
 export default {
   name: "CellPreview",
+  components: { SingleNumberInput },
   props: {
     onCellSelected: Function,
     onCellNumberChanged: Function,
@@ -24,21 +22,6 @@ export default {
     previewData: Object
   },
   computed: {
-    inputValue: {
-      get: function() {
-          let l_xData = this.previewData && this.previewData.inputValue;
-          if(l_xData === " ") {
-              l_xData = "";
-          }
-        return l_xData;
-      },
-      set: function(i_nValue) {
-        // this.value = i_nValue;
-        console.log("computed input value -> ", i_nValue);
-        this.onCellNumberChanged(this.previewData.id, i_nValue);
-      }
-    },
-
     notes: {
       get: function() {
         return (this.previewData && this.previewData.notes) || "";
@@ -50,12 +33,8 @@ export default {
     }
   },
   methods: {
-    onFocus: function(i_oEvent) {
-      console.log("Preview Focus: ", i_oEvent);
-    },
-
-    onInputChanged: function(i_oEvent) {
-      console.log("Preview Input Changed: ", i_oEvent);
+    onInputChanged: function(i_nNumber) {
+      this.onCellNumberChanged(this.previewData.id, i_nNumber);
     }
   }
 };
