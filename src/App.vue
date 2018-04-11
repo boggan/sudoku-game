@@ -35,6 +35,8 @@ function _findCellCoordinatesByKey(i_nCellId) {
 //=============================================================================
 // main module execution
 //=============================================================================
+const MAX_NOTES_LENGTH = 50;
+
 SudokuGenerator.generate(1);
 
 let l_aEasySheet = SudokuGenerator.generatedBoards[0].getSheet(0),
@@ -89,7 +91,9 @@ export default {
     onCellNoteChanged: function(i_nCellId, i_sNotes) {
       console.log("cell note changed ", i_nCellId);
       let l_oCoordinates = _findCellCoordinatesByKey(i_nCellId);
-      this.board[l_oCoordinates.row][l_oCoordinates.column].notes = i_sNotes;
+      this.board[l_oCoordinates.row][
+        l_oCoordinates.column
+      ].notes = i_sNotes.substr(0, MAX_NOTES_LENGTH);
       if (this.previewData) {
         this.previewData.notes = i_sNotes;
       }

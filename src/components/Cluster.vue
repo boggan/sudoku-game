@@ -7,7 +7,7 @@
               :answer="cell.answer"
               :solution="cell.solution"
               :notes="cell.notes"
-              :showSolution="false"
+              :showSolution="showSolution"
               :onCellNumberChanged="onCellNumberChanged"
               :onCellSelected="onCellSelected"
               />

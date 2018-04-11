@@ -2,14 +2,17 @@
     <div class="cell"
          :class="{ cell: true, 'editable-cell': this.editable }"
     >
-        <div v-if="editable">
+        <div v-if="editable && !showSolution">
             <input v-model="inputValue"  
                   @focus="onFocus"
-                  @keydown="onKeydown"
+                  @input="onInput"
+                  @change="onInputChanged"
+                  @keyup="onKeyUp"
                   type="text" 
                   class="cell-input" 
                   size="1" 
-                  maxlength="1"/>
+                  maxlength="1"
+                  pattern="[1-9]"/>
         </div>
         <div v-else>
             <span class="play-cell">{{solution}}</span>
@@ -52,14 +55,24 @@ export default {
       });
     },
 
-    onKeydown: function(i_oEvent) {
+    onInput: function(i_oEvent) {
+      console.log("On Input received with -> ", i_oEvent.key);
+    },
+
+    onInputChanged: function(i_oEvent) {
+      console.log("On Input Changed received -> ", i_oEvent);
+    },
+
+    onKeyUp: function(i_oEvent) {
+      console.log("On Key Up received -> ", i_oEvent.key);
       let l_sChar = this.processInput(i_oEvent.key);
       i_oEvent.target.value = l_sChar;
     },
+
     processInput(i_sChar) {
       let l_nNumKey = Number(i_sChar);
 
-      if (isNaN(l_nNumKey)) {
+      if (isNaN(l_nNumKey) || l_nNumKey === 0) {
         l_nNumKey = "";
       }
       this.onCellNumberChanged(this.id, l_nNumKey);
