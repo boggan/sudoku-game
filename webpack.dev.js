@@ -6,23 +6,6 @@ const
     BUILD_DIR = path.resolve(__dirname, "dist/debug/"),
     SRC_DIR = path.resolve(__dirname, "src/");
 
-/*
-    const extractHTML = new HtmlWebpackPlugin({
-  title: 'History Search',
-  filename: 'index.html',
-  inject: true,
-  template: setPath('/src/tpl/tpl.ejs'),
-  environment: process.env.NODE_ENV,
-  isLocalBuild: buildingForLocal(),
-  imgPath: (!buildingForLocal()) ? 'assets' : 'src/assets'
-})
-// Inside config object
-const config = { 
-. 
-.
-  plugins: [extractHTML],
-}*/
-
 // config to build sudoku generator
 module.exports = {
     mode: "development",

@@ -2,6 +2,7 @@ const
     webpack = require("webpack"),
     path = require("path"),
     CleanWebpackPlugin = require('clean-webpack-plugin'),
+    CopyWebpackPlugin = require('copy-webpack-plugin'),
     UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
     BUILD_DIR = path.resolve(__dirname, "dist/"),
     SRC_DIR = path.resolve(__dirname, "src/");
@@ -14,8 +15,14 @@ module.exports = {
         path: BUILD_DIR,
         filename: "sudoku-game.js",
     },
-    devtool: 'none', // remove from production build
+    devtool: 'none',
     target: 'web',
+    resolve: {
+        extensions: ['.js', '.vue', '.json'],
+        alias: {
+            'vue$': 'vue/dist/vue.esm.js'
+        }
+    },
     module: {
         rules: [{
                 test: /\.js$/,
@@ -37,6 +44,9 @@ module.exports = {
             verbose: false
         }),
         new UglifyJSPlugin(),
+        new CopyWebpackPlugin([{
+            from: 'public'
+        }]),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('production')
