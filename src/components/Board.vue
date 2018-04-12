@@ -10,6 +10,7 @@
                      :showSolution="showSolution"
                      :onCellNumberChanged="onCellNumberChanged"
                      :onCellSelected="onCellSelected" />
+          <slot name="celebration"></slot>
           <slot></slot>
         </div>
         <div class="signature">{{signature}}</div> 
@@ -73,7 +74,7 @@ export default {
 <style scoped>
 .sudoku-board {
   position: relative;
-  width: 340px;
+  width: 360px;
   height: 360px;
   margin: auto;
 }

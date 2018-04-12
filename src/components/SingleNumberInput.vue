@@ -1,8 +1,6 @@
 <template>
     <input  v-model="inputValue"  
             @focus="onFocus"
-            @input="onInput"
-            @change="onInputChanged"
             @keyup="onKeyUp"
             type="text" 
             class="cell-input" 
@@ -31,26 +29,19 @@ export default {
   },
   methods: {
     onFocus: function(i_oEvent) {
-      console.log("On input focuses", this.id, "Current Value: ", this.answer);
       if (this.onSelected) {
         this.onSelected();
       }
     },
 
-    onInput: function(i_oEvent) {
-      console.log("On Input received with -> ", i_oEvent.key);
-    },
-
-    onInputChanged: function(i_oEvent) {
-      console.log("On Input Changed received -> ", i_oEvent);
-    },
-
     onKeyUp: function(i_oEvent) {
+      let l_sChar = '';
+
       if (i_oEvent.keyCode >= 32 && i_oEvent.keyCode <= 126) {
-        console.log("On Key Up received -> ", i_oEvent.key);
-        let l_sChar = this.processInput(i_oEvent.key);
-        i_oEvent.target.value = l_sChar;
+        l_sChar = this.processInput(i_oEvent.key);
       }
+      
+      i_oEvent.target.value = l_sChar;
     },
 
     processInput(i_sChar) {

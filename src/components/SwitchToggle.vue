@@ -1,0 +1,101 @@
+<template>
+    <div>
+        <div v-if="label"
+             class="label">{{label}}</div>
+        <label class="switch">
+            <input type="checkbox"
+                    :checked="checked"
+                    @change="onInputChanged">
+            <span class="slider round"></span>
+        </label>
+    </div>
+</template>
+
+<script>
+export default {
+    name: "SwitchToggle",
+    props: {
+        checked: Boolean,
+        label: String,
+        onChange: Function
+    },
+
+    methods: {
+        onInputChanged: function (i_oEvent) {
+            console.log("Input Changed: ", i_oEvent.target.checked);
+            if (this.onChange) {
+                this.onChange(i_oEvent.target.checked);
+            }
+        }
+    }
+}
+</script>
+
+<style scoped>
+.label {
+    position: absolute;
+    top: 1px;
+    left: -110px;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 20px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  display: none;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #717171;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #717171;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(12px);
+  -ms-transform: translateX(12px);
+  transform: translateX(12px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 30px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>

@@ -28,7 +28,6 @@ export default {
         return (this.previewData && this.previewData.notes) || "";
       },
       set: function (i_sNotes) {
-        console.log("computed notes -> ", i_sNotes);
         this.onCellNoteChanged(this.previewData.id, i_sNotes);
       }
     }
@@ -48,6 +47,7 @@ export default {
 
 <style scoped>
 .cell-preview {
+  box-shadow: 4px 4px 10px #d3d3d3;
   border: 2px solid #505050;
   width: 120px;
   height: 120px;

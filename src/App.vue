@@ -2,12 +2,15 @@
     <div id="app">
         <h1 class="title">Sudoku</h1>
 
-        <div ref="difficulty-control">
-          <h3>Choose Difficulty</h3>
-          <button @click="setDifficulty(0)">easy</button>
-          <button @click="setDifficulty(1)">medium</button>
-          <button @click="setDifficulty(2)">hard</button>
+        <div v-if="board.length > 0"
+             class="preview-switch">
+          <SwitchToggle :checked="previewEnabled"
+                        :onChange="onPreviewToggled"
+                        label="Enable Preview: " />
         </div>
+        
+        <DifficultyControl ref="difficulty-control"
+                           :onChange="setDifficulty" />
 
         <div v-if="board.length > 0"
              :class="{'fade-in': board.length > 0}"
@@ -19,7 +22,10 @@
                 :onCellNumberChanged="onCellNumberChanged"
                 :onCellSelected="onCellSelected">
 
-            <CellPreview  v-show="previewData"
+            <Congratulations  v-if="showSolution" 
+                              slot="celebration" />
+
+            <CellPreview  v-show="previewData && previewEnabled"
                           v-on:close-preview="onClosePreview"
                           :previewData="previewData" 
                           :onCellNumberChanged="onCellNumberChanged"
@@ -28,13 +34,17 @@
 
           <div class="ctrl-buttons"
               v-if="board.length > 0">
+
+            <!--
             <button @click="showSolution = !showSolution">
                 <span v-if="showSolution">hide Solution</span>
                 <span v-else>Show Solution</span>
             </button>
+            -->
+            <button v-if="!showSolution"
+                    @click="validateSheet">validate</button>
+            <button @click="onNewSheetClicked">new sheet</button>
 
-            <button @click="validateSheet">validate sheet</button>
-            <button @click="onNewSheetClicked">get new sheet</button>
             <div>
               <span>Number of tries: {{nbTries}}</span>
             </div>
@@ -45,8 +55,11 @@
 
 <script>
 import { SudokuGenerator } from "js-sudoku-generator";
+import Congratulations from "./components/Congratulations";
 import Board from "./components/Board";
 import CellPreview from "./components/CellPreview";
+import SwitchToggle from "./components/SwitchToggle";
+import DifficultyControl from "./components/DifficultyControl";
 
 //=============================================================================
 function _findCellCoordinatesByKey(i_nCellId) {
@@ -103,12 +116,13 @@ function _buildNewBoard(i_nDifficulty) {
 //=============================================================================
 export default {
   name: "App",
-  components: { Board, CellPreview },
+  components: { Board, CellPreview, SwitchToggle, DifficultyControl, Congratulations },
   data: function () {
     return {
       board: [],
       signature: "",
       showSolution: false,
+      previewEnabled: true,
       previewData: null,
       difficulty: -1,
       nbTries: 0
@@ -118,27 +132,31 @@ export default {
     // this.buildNewBoard();
   },
   methods: {
+    //=============================================================================
+    onPreviewToggled: function (i_bEnabled) {
+      this.previewEnabled = i_bEnabled;
+    },
+
+    //=============================================================================
     onNewSheetClicked: function () {
       let l_oBoardContainer = this.$refs['board-container'],
         l_oDifficultyControl = this.$refs['difficulty-control'],
         l_fnOnAnimationEnded = () => {
           l_oBoardContainer.removeEventListener("animationend", l_fnOnAnimationEnded);
-          // on animation ended, 
-          // reset board
-          // fade-in difficulty control
           this.board.length = 0;
           this.signature = "";
           this.showSolution = false;
           this.previewData = null;
           this.difficulty = -1;
           this.nbTries = 0;
-          l_oDifficultyControl.classList.remove("fade-out", "hidden");
-          l_oDifficultyControl.classList.add("fade-in");
+          l_oDifficultyControl.show();
         };
 
       l_oBoardContainer.addEventListener("animationend", l_fnOnAnimationEnded);
       l_oBoardContainer.classList.add("fade-out");
     },
+
+    //=============================================================================
     buildNewBoard: function (i_nDifficulty) {
       let l_oBoardData = _buildNewBoard(i_nDifficulty);
       this.board = l_oBoardData.board;
@@ -148,6 +166,7 @@ export default {
       this.showSolution = false;
     },
 
+    //=============================================================================
     validateSheet: function () {
       this.nbTries++;
       this.previewData = null;
@@ -167,22 +186,27 @@ export default {
           }
           l_bErrorFound = l_oCell.answer !== l_oCell.solution;
           this.board[l_nRow][l_nColumn].isWrong = l_bErrorFound;
-          l_nNbErrorsDetected++;
+          if (l_bErrorFound) {
+            l_nNbErrorsDetected++;
+          }
         }
       }
 
       if (l_nNbErrorsDetected === 0) {
-        console.log("*** SUCCESS! ***");
         this.showSolution = true;
+        this.previewData = null;
       }
       else {
         this.$forceUpdate();
       }
     },
 
+    //=============================================================================
     onCellSelected: function (i_oCellData) {
       this.previewData = i_oCellData;
     },
+
+    //=============================================================================
     onCellNumberChanged: function (i_nCellId, i_nNumber) {
       let l_oCoordinates = _findCellCoordinatesByKey(i_nCellId);
       this.board[l_oCoordinates.row][l_oCoordinates.column].answer = i_nNumber;
@@ -190,6 +214,8 @@ export default {
         this.previewData.inputValue = i_nNumber;
       }
     },
+
+    //=============================================================================
     onCellNoteChanged: function (i_nCellId, i_sNotes) {
       let l_oCoordinates = _findCellCoordinatesByKey(i_nCellId);
       this.board[l_oCoordinates.row][l_oCoordinates.column].notes = i_sNotes.substr(0, MAX_NOTES_LENGTH);
@@ -197,22 +223,19 @@ export default {
         this.previewData.notes = i_sNotes;
       }
     },
+
+    //=============================================================================
     onClosePreview: function () {
       this.previewData = null;
     },
 
+    //=============================================================================
     setDifficulty: function (i_nDifficulty) {
       this.difficulty = i_nDifficulty;
-      let l_oDOMRef = this.$refs['difficulty-control'],
-        l_fnOnAnimationEnded = () => {
-          l_oDOMRef.classList.add("hidden");
-          this.onDifficultyChosen();
-          l_oDOMRef.removeEventListener("animationend", l_fnOnAnimationEnded);
-        };
-      l_oDOMRef.addEventListener("animationend", l_fnOnAnimationEnded);
-      l_oDOMRef.classList.add("fade-out");
+      this.$refs['difficulty-control'].hide(() => this.onDifficultyChosen());
     },
 
+    //=============================================================================
     onDifficultyChosen: function () {
       // on animation ended
       this.buildNewBoard(this.difficulty);
@@ -222,13 +245,16 @@ export default {
 </script>
 
 <style scoped>
-.title {
-  padding-left: 16px;
-}
 #app {
   position: relative;
   /* color: #01410a; */
   text-align: center;
+}
+
+.preview-switch {
+  position: absolute;
+  top: 0;
+  right: 10px;
 }
 
 .hidden {
@@ -266,5 +292,3 @@ export default {
   }
 }
 </style>
-
-

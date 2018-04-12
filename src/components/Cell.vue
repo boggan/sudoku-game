@@ -75,7 +75,6 @@ export default {
 
 .cell-error {
   border:1px SOLID #f00;
-  background-color: #f00;
 }
 </style>
 
