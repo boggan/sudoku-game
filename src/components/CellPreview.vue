@@ -1,11 +1,12 @@
 <template>
-    <div class="cell-preview">
+    <div class="cell-preview"
+          @keydown="onKeyDown">
         <input placeholder="Notes: " 
                v-model="notes"
                class="cell-notes" />
 
-        <single-number-input    :number="previewData && previewData.inputValue || ''"
-                                :onChange="onInputChanged" />
+        <SingleNumberInput    :number="previewData && previewData.inputValue || ''"
+                              :onChange="onInputChanged" />
     </div>
 </template>
 
@@ -23,17 +24,22 @@ export default {
   },
   computed: {
     notes: {
-      get: function() {
+      get: function () {
         return (this.previewData && this.previewData.notes) || "";
       },
-      set: function(i_sNotes) {
+      set: function (i_sNotes) {
         console.log("computed notes -> ", i_sNotes);
         this.onCellNoteChanged(this.previewData.id, i_sNotes);
       }
     }
   },
   methods: {
-    onInputChanged: function(i_nNumber) {
+    onKeyDown: function (i_oEvent) {
+      if (i_oEvent.key === "Escape") {
+        this.$emit("close-preview");
+      }
+    },
+    onInputChanged: function (i_nNumber) {
       this.onCellNumberChanged(this.previewData.id, i_nNumber);
     }
   }
@@ -42,12 +48,12 @@ export default {
 
 <style scoped>
 .cell-preview {
-  border: 2px solid #00d500;
+  border: 2px solid #505050;
   width: 120px;
   height: 120px;
   position: absolute;
   left: 360px;
-  top: 70px;
+  top: 10px;
 }
 
 .cell-notes {

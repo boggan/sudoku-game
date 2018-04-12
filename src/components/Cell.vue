@@ -1,9 +1,8 @@
 <template>
-    <div class="cell"
-         :class="{ cell: true, 'editable-cell': this.editable }"
+    <div :class="{ cell: true, 'editable-cell': this.editable, 'cell-error': this.isWrong }"
     >
         <div v-if="editable && !showSolution">
-            <single-number-input    :number="answer"
+            <SingleNumberInput    :number="answer"
                                     :onChange="onChange"
                                     :onSelected="onSelected" />
         </div>
@@ -25,6 +24,7 @@ export default {
     answer: [String, Number],
     solution: Number,
     notes: String,
+    isWrong: Boolean,
     showSolution: Boolean,
     onCellNumberChanged: Function,
     onCellSelected: Function
@@ -54,8 +54,8 @@ export default {
   min-height: 24px;
   text-align: center;
   padding-top: 6px;
-  border: 1px solid brown;
-  background-color: #d3d3d3;
+  border: 1px solid #a9a9a9;
+  background-color: #ececec;
 }
 
 .cell-input {
@@ -71,6 +71,11 @@ export default {
 
 .editable-cell {
   background-color: #ffffff;
+}
+
+.cell-error {
+  border:1px SOLID #f00;
+  background-color: #f00;
 }
 </style>
 

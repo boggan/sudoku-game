@@ -7,6 +7,7 @@
               :answer="cell.answer"
               :solution="cell.solution"
               :notes="cell.notes"
+              :isWrong="cell.isWrong"
               :showSolution="showSolution"
               :onCellNumberChanged="onCellNumberChanged"
               :onCellSelected="onCellSelected"
@@ -39,6 +40,7 @@ export default {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
+  border: 1px SOLID #000;
 }
 </style>
 

@@ -10,6 +10,7 @@
                      :showSolution="showSolution"
                      :onCellNumberChanged="onCellNumberChanged"
                      :onCellSelected="onCellSelected" />
+          <slot></slot>
         </div>
         <div class="signature">{{signature}}</div> 
     </div>
@@ -54,9 +55,9 @@ export default {
   },
 
   computed: {
-    clusters: function() {
+    clusters: function () {
       let i,
-          l_aClusters = [];
+        l_aClusters = [];
 
       // 9 clusters
       for (i = 0; i < 9; i++) {
@@ -74,6 +75,7 @@ export default {
   position: relative;
   width: 340px;
   height: 360px;
+  margin: auto;
 }
 
 .c1,
@@ -97,25 +99,24 @@ export default {
 .c1,
 .c2,
 .c3 {
-  border: 1px SOLID #d3d5d5;
   top: 0;
 }
 
 .c4,
 .c5,
 .c6 {
-  border: 1px SOLID #00ff00;
   top: 120px;
 }
 
 .c7,
 .c8,
 .c9 {
-  border: 1px SOLID #0000ff;
   top: 240px;
 }
 
 .signature {
   font-size: 8px;
+  margin-top: 10px;
+  margin-bottom: 20px;
 }
 </style>
