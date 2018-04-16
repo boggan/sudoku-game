@@ -79,6 +79,11 @@ export default {
   margin: auto;
 }
 
+.signature {
+  margin: 20px auto 20px auto;
+  display: none;
+}
+
 .c1,
 .c4,
 .c7 {

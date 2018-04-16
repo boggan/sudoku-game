@@ -35,12 +35,6 @@
           <div class="ctrl-buttons"
               v-if="board.length > 0">
 
-            <!--
-            <button @click="showSolution = !showSolution">
-                <span v-if="showSolution">hide Solution</span>
-                <span v-else>Show Solution</span>
-            </button>
-            -->
             <button v-if="!showSolution"
                     @click="validateSheet">validate</button>
             <button @click="onNewSheetClicked">new sheet</button>

@@ -22,7 +22,6 @@ export default {
 
     methods: {
         onInputChanged: function (i_oEvent) {
-            console.log("Input Changed: ", i_oEvent.target.checked);
             if (this.onChange) {
                 this.onChange(i_oEvent.target.checked);
             }
